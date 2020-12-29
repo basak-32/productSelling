@@ -145,3 +145,59 @@ exports.removeProduct = (req, res) => {
     });
   });
 };
+
+
+// LISTING PRODUCTS CONTROLLER
+exports.getAllProducts = (req, res) => {
+  let limit = req.query.limit ? parseInt(req.query.limit) : 8;
+  let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+
+  Product.find()
+    .select('-photo')
+    .sort([[sortBy, 'asc']])
+    .limit(limit)
+    .exec((err, products) => {
+      if (err) {
+        return res.status(400).json({
+          error: "No product found!"
+        });
+      };
+
+      res.json(products);
+    });
+};
+
+
+exports.getAllUniqueCategories = (req, res) => {
+  Product.distinct('category', {}, (err, categories) => {
+    if (err) {
+      return res.status(400).json({
+        error: "No category found!"
+      });
+    };
+
+    res.json(categories);
+  });
+};
+
+
+exports.updateStock = (req, res, next) => {
+  let myOperations = req.body.cart.products.map(product => {
+    return {
+      updateOne: {
+        filter: { _id: product._id },
+        update: { $inc: { inStock: -product.count, sold: +product.count } }
+      }
+    };
+  });
+
+  Product.bulkWrite(myOperations, {}, (err, products) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Bulk operation failed!"
+      });
+    };
+
+    next();
+  });
+};
