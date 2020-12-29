@@ -1,7 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-const { getProductById, createProduct } = require('../controllers/product');
+const {
+  getProductById,
+  createProduct,
+  getProduct,
+  getPhoto,
+  updateProduct,
+  removeProduct
+} = require('../controllers/product');
 const { isSignedIn, isAuthenticated, isAdmin } = require('../controllers/auth');
 const { getUserById } = require('../controllers/user');
 
@@ -9,13 +16,37 @@ const { getUserById } = require('../controllers/user');
 router.param('userId', getUserById);
 router.param('productId', getProductById);
 
-// ROUTES
+// ROUTES -->
+
+// CREATE PRODUCT
 router.post(
   '/product/create/:userId',
   isSignedIn,
   isAuthenticated,
   isAdmin,
   createProduct
+);
+
+// GET or READ PRODUCTS
+router.get('/product/:productId', getProduct);
+router.get('/product/photo/:productId', getPhoto);
+
+// UPDATE PRODUCT
+router.put(
+  '/product/update/:productId/:userId',
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  updateProduct
+);
+
+// REMOVE or DELETE PRODUCT
+router.delete(
+  '/product/remove/:productId/:userId',
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  removeProduct
 );
 
 module.exports = router;
