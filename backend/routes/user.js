@@ -23,6 +23,6 @@ router.put(
   updateUser
 );
 
-router.get('/carts/user/:userId', isSignedIn, isAuthenticated, userPurchaseList);
+router.get('/orders/user/:userId', isSignedIn, isAuthenticated, userPurchaseList);
 
 module.exports = router;

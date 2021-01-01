@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const Cart = require('../models/cart');
+const Order = require('../models/order');
 
 const { check, validationResult } = require('express-validator');
 
@@ -69,7 +69,7 @@ exports.updateUser = (req, res) => {
 
 
 exports.userPurchaseList = (req, res) => {
-  Cart.find({user: req.profile._id})
+  Order.find({user: req.profile._id})
     .populate('user', '_id firstName')
     .exec((err, cart) => {
       if (err) {
@@ -86,7 +86,7 @@ exports.userPurchaseList = (req, res) => {
 exports.pushOrderInPurchaseList = (req, res, next) => {
   let purchases = [];
 
-  req.body.cart.products.forEach(product => {
+  req.body.order.products.forEach(product => {
     purchases.push({
       _id: product._id,
       name: product.name,
