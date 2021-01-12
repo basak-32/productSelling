@@ -6,6 +6,7 @@ const { check, validationResult } = require('express-validator');
 const { signup, signin, signout, isSignedIn } = require('../controllers/auth');
 
 router.post('/signup', [
+  check('firstName', 'First Name is required').isLength({ min: 1 }),
   check('email', 'proper email is required').isEmail(),
   check('password', 'password must be of length 5 or more').isLength({ min: 5 })
 ], signup);
